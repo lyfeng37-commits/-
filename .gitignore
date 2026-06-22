@@ -1,0 +1,12 @@
+node_modules
+dist
+source-media
+.env
+.env.local
+.DS_Store
+Thumbs.db
+vite.log
+vite.err
+*.log
+*.err
+preview-*.html
