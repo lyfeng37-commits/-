@@ -1,26 +1,37 @@
-import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import heroDaynightLoop from './assets/optimized/hero-daynight-loop-web.mp4';
 import heroDaynightPoster from './assets/optimized/hero-daynight-poster.jpg';
 import heroMarquee01 from './assets/optimized/hero-marquee-01-thumb.jpg';
-import heroMarquee02 from './assets/optimized/hero-marquee-02-thumb.jpg';
 import heroMarquee03 from './assets/optimized/hero-marquee-03-thumb.jpg';
-import heroMarquee04 from './assets/optimized/hero-marquee-04-thumb.jpg';
 import heroMarquee05 from './assets/optimized/hero-marquee-05-thumb.jpg';
 import heroMarquee06 from './assets/optimized/hero-marquee-06-thumb.jpg';
 import heroMarquee07 from './assets/optimized/hero-marquee-07-thumb.jpg';
 import heroMarquee08 from './assets/optimized/hero-marquee-08-thumb.jpg';
-import heroMarquee09 from './assets/optimized/hero-marquee-09-thumb.jpg';
-import heroMarquee10 from './assets/optimized/hero-marquee-10-thumb.jpg';
 import heroMarquee11 from './assets/optimized/hero-marquee-11-thumb.jpg';
 import heroMarquee12 from './assets/optimized/hero-marquee-12-thumb.jpg';
+import nianlunCarouselCover from './assets/optimized/nianlun-carousel-01-cover.jpg';
+import nianlunCarouselRings from './assets/optimized/nianlun-carousel-02-rings.jpg';
+import nianlunCarouselTimeline from './assets/optimized/nianlun-carousel-03-timeline.jpg';
+import projectAiCompanion from './assets/optimized/project-ai-companion-card.jpg';
+import characterTurnaroundFull from './assets/gallery/character-turnaround.png';
+import interiorCeilingFull from './assets/gallery/interior-ceiling.jpg';
+import interiorHallFull from './assets/gallery/interior-hall.jpg';
+import ipButterflyFull from './assets/gallery/ip-butterfly.png';
+import ipCharacterSheetFull from './assets/gallery/ip-character-sheet.png';
+import ipRainFull from './assets/gallery/ip-rain.png';
+import ipRunningFull from './assets/gallery/ip-running.png';
+import ipStormFull from './assets/gallery/ip-storm.png';
+import nianlunOverviewFull from './assets/gallery/nianlun-overview.jpg';
 import liYifengProfile from './assets/optimized/li-yifeng-profile-card.jpg';
 import projectIpCharacter from './assets/optimized/project-ip-character-card.jpg';
 import projectIpShortfilm from './assets/optimized/project-ip-shortfilm-card.jpg';
+import projectNianlun from './assets/optimized/project-nianlun-card.jpg';
 import BorderGlow from './components/BorderGlow.jsx';
 import ProfileCard from './components/ProfileCard.jsx';
-import { careerPath, navigation, profile, projects, strengths } from './data.js';
+import { capabilityInfo, careerPath, featuredProjects, moreProjects, navigation, profile, strengths } from './data.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -110,7 +121,7 @@ function Header() {
 
   return (
     <header className={`site-header${isFloating ? ' site-header-floating' : ''}`}>
-      <a className="brand" href="#top" aria-label="返回首页">
+      <a className="brand" href="#contact" aria-label="跳转到联系方式">
         <span className="brand-mark">CO</span>
         <span>{profile.name}</span>
       </a>
@@ -121,9 +132,6 @@ function Header() {
           </a>
         ))}
       </nav>
-      <a className="header-action" href="#contact">
-        联系我
-      </a>
     </header>
   );
 }
@@ -167,11 +175,11 @@ const glowThemes = {
   },
 };
 
-const glowToneOrder = ['mint', 'amber', 'violet'];
-
 const projectImages = {
+  aiCompanion: projectAiCompanion,
   ipCharacter: projectIpCharacter,
   ipShortfilm: projectIpShortfilm,
+  nianlun: projectNianlun,
   spaceVisual: heroMarquee12,
 };
 
@@ -180,18 +188,18 @@ function getGlowTheme(tone) {
 }
 
 const heroMarqueeImages = [
-  { src: heroMarquee01, tone: 'mint' },
-  { src: heroMarquee02, tone: 'violet' },
-  { src: heroMarquee03, tone: 'amber' },
-  { src: heroMarquee04, tone: 'mint' },
-  { src: heroMarquee05, tone: 'violet' },
-  { src: heroMarquee06, tone: 'amber' },
-  { src: heroMarquee07, tone: 'mint' },
-  { src: heroMarquee08, tone: 'violet' },
-  { src: heroMarquee09, tone: 'amber' },
-  { src: heroMarquee10, tone: 'mint' },
-  { src: heroMarquee11, tone: 'violet' },
-  { src: heroMarquee12, tone: 'amber' },
+  { src: nianlunCarouselCover, fullSrc: nianlunCarouselCover, label: '年轮 · 项目封面', tone: 'amber' },
+  { src: nianlunCarouselRings, fullSrc: nianlunCarouselRings, label: '年轮 · 家族年轮', tone: 'violet' },
+  { src: nianlunCarouselTimeline, fullSrc: nianlunCarouselTimeline, label: '年轮 · 家族时间轴', tone: 'mint' },
+  { src: nianlunOverviewFull, fullSrc: nianlunOverviewFull, label: '年轮 · 项目总览', tone: 'amber' },
+  { src: heroMarquee07, fullSrc: ipCharacterSheetFull, label: '《塔可的星际日记》角色设定', tone: 'mint' },
+  { src: heroMarquee08, fullSrc: characterTurnaroundFull, label: '个人 IP 角色三视图', tone: 'violet' },
+  { src: heroMarquee01, fullSrc: ipStormFull, label: '穿越风暴', tone: 'amber' },
+  { src: heroMarquee03, fullSrc: ipButterflyFull, label: '追随光蝶', tone: 'mint' },
+  { src: heroMarquee05, fullSrc: ipRainFull, label: '雨中的守候', tone: 'violet' },
+  { src: heroMarquee06, fullSrc: ipRunningFull, label: '奔向光亮', tone: 'amber' },
+  { src: heroMarquee11, fullSrc: interiorCeilingFull, label: '商业空间设计一', tone: 'violet' },
+  { src: heroMarquee12, fullSrc: interiorHallFull, label: '商业空间设计二', tone: 'amber' },
 ];
 
 function usePortfolioMotion() {
@@ -440,12 +448,116 @@ function usePortfolioMotion() {
   }, []);
 }
 
+function GalleryLightbox({ images, activeIndex, onClose, onNavigate }) {
+  const closeButtonRef = useRef(null);
+  const touchStartXRef = useRef(null);
+  const activeImage = images[activeIndex];
+
+  useEffect(() => {
+    const previouslyFocused = document.activeElement;
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') onClose();
+      if (event.key === 'ArrowLeft') onNavigate(-1);
+      if (event.key === 'ArrowRight') onNavigate(1);
+    };
+
+    document.body.classList.add('modal-open');
+    window.addEventListener('keydown', handleKeyDown);
+    closeButtonRef.current?.focus();
+
+    return () => {
+      document.body.classList.remove('modal-open');
+      window.removeEventListener('keydown', handleKeyDown);
+      previouslyFocused?.focus?.();
+    };
+  }, [onClose, onNavigate]);
+
+  useEffect(() => {
+    const previousIndex = (activeIndex - 1 + images.length) % images.length;
+    const nextIndex = (activeIndex + 1) % images.length;
+    [images[previousIndex], images[nextIndex]].forEach((image) => {
+      const preload = new Image();
+      preload.src = image.fullSrc;
+    });
+  }, [activeIndex, images]);
+
+  const handleTouchStart = (event) => {
+    touchStartXRef.current = event.touches[0]?.clientX ?? null;
+  };
+
+  const handleTouchEnd = (event) => {
+    if (touchStartXRef.current === null) return;
+    const endX = event.changedTouches[0]?.clientX ?? touchStartXRef.current;
+    const deltaX = endX - touchStartXRef.current;
+    touchStartXRef.current = null;
+
+    if (Math.abs(deltaX) < 48) return;
+    onNavigate(deltaX > 0 ? -1 : 1);
+  };
+
+  return createPortal(
+    <div
+      className="gallery-lightbox"
+      role="dialog"
+      aria-modal="true"
+      aria-label={`作品图片预览 ${activeIndex + 1} / ${images.length}`}
+      onClick={onClose}
+    >
+      <div
+        className="gallery-lightbox-dialog"
+        onClick={(event) => event.stopPropagation()}
+        onTouchEnd={handleTouchEnd}
+        onTouchStart={handleTouchStart}
+      >
+        <button
+          ref={closeButtonRef}
+          className="gallery-lightbox-control gallery-lightbox-close"
+          type="button"
+          aria-label="关闭图片预览"
+          title="关闭"
+          onClick={onClose}
+        >
+          ×
+        </button>
+        <button
+          className="gallery-lightbox-control gallery-lightbox-previous"
+          type="button"
+          aria-label="查看上一张图片"
+          title="上一张"
+          onClick={() => onNavigate(-1)}
+        >
+          ‹
+        </button>
+        <figure className="gallery-lightbox-figure">
+          <img src={activeImage.fullSrc} alt={activeImage.label} draggable="false" />
+          <figcaption aria-live="polite">
+            <strong>{activeImage.label}</strong>
+            <span>{String(activeIndex + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}</span>
+          </figcaption>
+        </figure>
+        <button
+          className="gallery-lightbox-control gallery-lightbox-next"
+          type="button"
+          aria-label="查看下一张图片"
+          title="下一张"
+          onClick={() => onNavigate(1)}
+        >
+          ›
+        </button>
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
 function WorkMarquee() {
   const trackRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [activePreviewIndex, setActivePreviewIndex] = useState(null);
   const groupWidthRef = useRef(0);
   const offsetRef = useRef(0);
   const isVisibleRef = useRef(true);
+  const previewOpenRef = useRef(false);
   const dragRef = useRef({
     isDragging: false,
     lastClientX: 0,
@@ -455,7 +567,26 @@ function WorkMarquee() {
     suppressClick: false,
   });
   const inertiaRef = useRef(0);
-  const marqueeItems = [heroMarqueeImages, heroMarqueeImages, heroMarqueeImages].flat();
+  const marqueeItems = [0, 1, 2].flatMap(() =>
+    heroMarqueeImages.map((item, sourceIndex) => ({ ...item, sourceIndex })),
+  );
+
+  const openPreview = useCallback((index) => {
+    previewOpenRef.current = true;
+    setActivePreviewIndex(index);
+  }, []);
+
+  const closePreview = useCallback(() => {
+    previewOpenRef.current = false;
+    setActivePreviewIndex(null);
+  }, []);
+
+  const navigatePreview = useCallback((direction) => {
+    setActivePreviewIndex((currentIndex) => {
+      if (currentIndex === null) return null;
+      return (currentIndex + direction + heroMarqueeImages.length) % heroMarqueeImages.length;
+    });
+  }, []);
 
   const normalizeOffset = () => {
     const groupWidth = groupWidthRef.current;
@@ -514,7 +645,7 @@ function WorkMarquee() {
       const deltaTime = Math.min(timestamp - lastTimestamp, 40);
       lastTimestamp = timestamp;
 
-      if (!dragRef.current.isDragging && groupWidthRef.current) {
+      if (!dragRef.current.isDragging && !previewOpenRef.current && groupWidthRef.current) {
         offsetRef.current += (autoSpeed + inertiaRef.current) * deltaTime;
         inertiaRef.current *= Math.pow(0.92, deltaTime / 16.67);
         if (Math.abs(inertiaRef.current) < 0.004) {
@@ -577,11 +708,6 @@ function WorkMarquee() {
 
   const handlePointerDown = (event) => {
     if (event.pointerType === 'mouse' && event.button !== 0 && event.buttons !== 1) return;
-    try {
-      event.currentTarget.setPointerCapture?.(event.pointerId);
-    } catch {
-      // Synthetic or interrupted pointer events can still use local drag state.
-    }
     dragRef.current = {
       isDragging: true,
       lastClientX: event.clientX,
@@ -605,7 +731,16 @@ function WorkMarquee() {
     dragState.lastMoveTime = now;
     dragState.totalDelta += Math.abs(deltaX);
     dragState.velocity = deltaX / deltaTime;
+    const startedDragging = !dragState.suppressClick && dragState.totalDelta > 6;
     dragState.suppressClick = dragState.totalDelta > 6;
+
+    if (startedDragging) {
+      try {
+        event.currentTarget.setPointerCapture?.(event.pointerId);
+      } catch {
+        // Pointer capture may fail when the pointer leaves during a fast drag.
+      }
+    }
 
     offsetRef.current += deltaX;
     normalizeOffset();
@@ -635,36 +770,61 @@ function WorkMarquee() {
   };
 
   return (
-    <div
-      className={`hero-work-marquee${isDragging ? ' is-dragging' : ''}`}
-      aria-label="作品图片滚动展示，可拖拽横向浏览"
-      onClickCapture={handleClickCapture}
-      onPointerCancel={endDrag}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={endDrag}
-    >
-      <div className="hero-work-track" ref={trackRef}>
-        {marqueeItems.map((item, index) => (
-          <ProfileCard
-            key={`hero-marquee-${index}`}
-            avatarUrl={item.src}
-            behindGlowColor={galleryThemes[item.tone]?.glow}
-            behindGlowSize="44%"
-            className={`hero-profile-card hero-profile-card-${item.tone}`}
-            enableMobileTilt={false}
-            enableTilt={false}
-            handle="李奕锋"
-            imageLoading="eager"
-            innerGradient={`linear-gradient(145deg, ${galleryThemes[item.tone]?.base ?? '#101815'} 0%, rgba(255, 255, 255, 0.08) 100%)`}
-            miniAvatarUrl={item.src}
-            name=""
-            status=""
-            title=""
-          />
-        ))}
+    <>
+      <div
+        className={`hero-work-marquee${isDragging ? ' is-dragging' : ''}`}
+        aria-label="作品图片滚动展示，可拖拽横向浏览，点击查看大图"
+        onClickCapture={handleClickCapture}
+        onPointerCancel={endDrag}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={endDrag}
+      >
+        <div className="hero-work-track" ref={trackRef}>
+          {marqueeItems.map((item, index) => (
+            <div
+              className="hero-work-preview-trigger"
+              role="button"
+              tabIndex={0}
+              aria-haspopup="dialog"
+              aria-label={`查看${item.label}大图`}
+              key={`hero-marquee-${index}`}
+              onClick={() => openPreview(item.sourceIndex)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  openPreview(item.sourceIndex);
+                }
+              }}
+            >
+              <ProfileCard
+                avatarUrl={item.src}
+                behindGlowColor={galleryThemes[item.tone]?.glow}
+                behindGlowSize="44%"
+                className={`hero-profile-card hero-profile-card-${item.tone}`}
+                enableMobileTilt={false}
+                enableTilt={false}
+                handle="李奕锋"
+                imageLoading="eager"
+                innerGradient={`linear-gradient(145deg, ${galleryThemes[item.tone]?.base ?? '#101815'} 0%, rgba(255, 255, 255, 0.08) 100%)`}
+                miniAvatarUrl={item.src}
+                name=""
+                status=""
+                title=""
+              />
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+      {activePreviewIndex !== null ? (
+        <GalleryLightbox
+          activeIndex={activePreviewIndex}
+          images={heroMarqueeImages}
+          onClose={closePreview}
+          onNavigate={navigatePreview}
+        />
+      ) : null}
+    </>
   );
 }
 
@@ -683,16 +843,16 @@ function Hero() {
       <div className="hero-stage page-shell">
         <div className="hero-title-group">
           <p className="hero-kicker">求职意向：内容运营</p>
-          <h1 className="hero-title" aria-label={`${profile.name} Portfolio`}>
+          <h1 className="hero-title" aria-label={`${profile.name}, Content and AI Creator`}>
             <span>{profile.name}</span>
-            <span>PORTFOLIO</span>
+            <span>CONTENT &amp; AI CREATOR</span>
           </h1>
           <p className="hero-lede">
-            用内容策略、平台表达和数据复盘，让品牌内容更快、更准、更有辨识度。
+            用内容与AI，把想法变成可以展示和体验的作品。
           </p>
           <div className="hero-actions" aria-label="主要操作">
             <a className="primary-button" href="#projects">
-              查看作品
+              查看项目
             </a>
             <a className="ghost-button" href="#contact">
               联系我
@@ -800,10 +960,10 @@ function Experience() {
       <div className="page-shell experience-shell">
         <div className="experience-heading">
           <div>
-            <h2>WORK EXPERIENCE <span>↘</span></h2>
-            <p>个人经历</p>
+            <h2>ABOUT &amp; EXPERIENCE</h2>
+            <p>关于我 · 职业经历</p>
           </div>
-          <span className="experience-index">02 / EXPERIENCE</span>
+          <span className="experience-index">03 / EXPERIENCE</span>
         </div>
 
         <div className="experience-main">
@@ -822,8 +982,8 @@ function Experience() {
             onContactClick={() => {
               window.location.href = `mailto:${profile.email}`;
             }}
-            status="内容运营候选人"
-            title="Content Operator"
+            status="新媒体运营 / AI内容创作者"
+            title="Content Operations"
           />
 
           <div className="experience-about">
@@ -850,7 +1010,7 @@ function Experience() {
             </div>
 
             <div className="now-building">
-              <span>NOW BUILDING</span>
+              <span>CURRENT FOCUS</span>
               <div>
                 {profile.building.map((item) => (
                   <b key={item}>{item}</b>
@@ -870,7 +1030,15 @@ function Experience() {
                 <time>{item.period}</time>
                 <h3>{item.company}</h3>
                 <b>{item.role}</b>
-                <p>{item.detail}</p>
+                {Array.isArray(item.detail) ? (
+                  <ul>
+                    {item.detail.map((detail) => (
+                      <li key={detail}>{detail}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>{item.detail}</p>
+                )}
               </article>
             ))}
           </div>
@@ -881,6 +1049,8 @@ function Experience() {
 }
 
 function ProjectVideoModal({ project, onClose }) {
+  const closeButtonRef = useRef(null);
+
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
@@ -890,6 +1060,7 @@ function ProjectVideoModal({ project, onClose }) {
 
     document.body.classList.add('modal-open');
     window.addEventListener('keydown', handleKeyDown);
+    closeButtonRef.current?.focus();
 
     return () => {
       document.body.classList.remove('modal-open');
@@ -902,7 +1073,7 @@ function ProjectVideoModal({ project, onClose }) {
   return (
     <div className="video-modal" role="dialog" aria-modal="true" aria-label={`${project.title}视频播放`} onClick={onClose}>
       <div className="video-modal-panel" onClick={(event) => event.stopPropagation()}>
-        <button className="video-modal-close" type="button" onClick={onClose} aria-label="关闭视频">
+        <button ref={closeButtonRef} className="video-modal-close" type="button" onClick={onClose} aria-label="关闭视频">
           ×
         </button>
         <video className="project-modal-video" src={project.video} controls autoPlay playsInline />
@@ -916,6 +1087,8 @@ function ProjectVideoModal({ project, onClose }) {
 }
 
 function ProjectPdfModal({ project, onClose }) {
+  const closeButtonRef = useRef(null);
+
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
@@ -925,6 +1098,7 @@ function ProjectPdfModal({ project, onClose }) {
 
     document.body.classList.add('modal-open');
     window.addEventListener('keydown', handleKeyDown);
+    closeButtonRef.current?.focus();
 
     return () => {
       document.body.classList.remove('modal-open');
@@ -937,14 +1111,14 @@ function ProjectPdfModal({ project, onClose }) {
   return (
     <div className="video-modal pdf-modal" role="dialog" aria-modal="true" aria-label={`${project.title} PDF展示`} onClick={onClose}>
       <div className="video-modal-panel pdf-modal-panel" onClick={(event) => event.stopPropagation()}>
-        <button className="video-modal-close" type="button" onClick={onClose} aria-label="关闭PDF">
+        <button ref={closeButtonRef} className="video-modal-close" type="button" onClick={onClose} aria-label="关闭PDF">
           ×
         </button>
         <iframe className="project-pdf-frame" src={`${project.pdf}#toolbar=1&navpanes=0`} title={`${project.title} PDF`} />
         <div className="video-modal-caption">
           {project.type ? <span>{project.type}</span> : null}
           <strong>{project.title}</strong>
-          <a href={project.pdf} target="_blank" rel="noreferrer">
+          <a href={project.pdf} target="_blank" rel="noopener noreferrer">
             新窗口打开
           </a>
         </div>
@@ -961,14 +1135,15 @@ function ProjectImage({ project }) {
   return (
     <div
       className={`project-image project-image-${project.tone}${hasMedia ? ' project-image-has-asset' : ''}${videoSrc ? ' project-image-video' : ''}`}
-      aria-label={`${project.title}作品图片`}
+      role="img"
+      aria-label={project.imageAlt ?? `${project.title}作品图片`}
     >
       {imageSrc ? (
         <>
           <img
             className="project-image-media"
             src={imageSrc}
-            alt={`${project.title}作品图片`}
+            alt={project.imageAlt ?? `${project.title}作品图片`}
             loading="lazy"
             style={{
               objectFit: project.imageFit ?? 'cover',
@@ -978,7 +1153,7 @@ function ProjectImage({ project }) {
           {videoSrc ? (
             <span className="project-video-play" aria-hidden="true">
               <span />
-              播放视频
+              {project.actionLabel.replace(/^▶\s*/, '')}
             </span>
           ) : null}
         </>
@@ -994,7 +1169,7 @@ function ProjectImage({ project }) {
           />
           <span className="project-video-play" aria-hidden="true">
             <span />
-            播放视频
+            {project.actionLabel.replace(/^▶\s*/, '')}
           </span>
         </>
       ) : (
@@ -1015,65 +1190,127 @@ function ProjectImage({ project }) {
   );
 }
 
+function ProjectAction({ project, onOpen }) {
+  if (project.externalUrl) {
+    return (
+      <a
+        className="project-action project-action-primary"
+        href={project.externalUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={(event) => event.stopPropagation()}
+      >
+        {project.actionLabel}
+      </a>
+    );
+  }
+
+  return (
+    <button
+      className="project-action project-action-primary"
+      type="button"
+      onClick={(event) => {
+        event.stopPropagation();
+        onOpen(project);
+      }}
+    >
+      {project.actionLabel}
+    </button>
+  );
+}
+
+function ProjectCard({ project, index, compact = false, onOpen }) {
+  const theme = getGlowTheme(project.tone);
+  const actionKind = project.video ? '视频' : project.pdf ? 'PDF' : '在线体验';
+  const openProject = () => onOpen(project);
+
+  return (
+    <BorderGlow
+      animated={!compact && index === 0}
+      backgroundColor={theme.bg}
+      borderRadius={compact ? 22 : 26}
+      className={`project-card project-card-${project.tone} project-card-clickable${compact ? ' more-project-card' : ' featured-project-card'}`}
+      colors={theme.colors}
+      coneSpread={24}
+      edgeSensitivity={24}
+      fillOpacity={0.24}
+      glowColor={theme.hsl}
+      glowIntensity={1.15}
+      glowRadius={compact ? 36 : 46}
+      role="button"
+      tabIndex={0}
+      aria-label={`${project.title}，${actionKind}`}
+      onClick={openProject}
+      onKeyDown={(event) => {
+        if (event.target !== event.currentTarget) return;
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openProject();
+        }
+      }}
+    >
+      <ProjectImage project={project} />
+      <div className="project-copy">
+        <div className="project-kicker">
+          <span>{project.type}</span>
+          <b>{project.number}</b>
+        </div>
+        <h3>{project.title}</h3>
+        {project.subtitle ? <p className="project-subtitle">{project.subtitle}</p> : null}
+        <p className="project-summary">{project.summary}</p>
+        {project.disclaimer ? <p className="project-disclaimer">{project.disclaimer}</p> : null}
+        <div className="stat-row" aria-label="项目标签">
+          {project.stats.map((stat) => (
+            <b key={stat}>{stat}</b>
+          ))}
+        </div>
+        {project.details ? (
+          <div className="project-details">
+            {project.details.map((detail) => (
+              <span key={detail}>{detail}</span>
+            ))}
+          </div>
+        ) : null}
+        {project.note ? <p className="project-note">{project.note}</p> : null}
+        <div className="project-actions">
+          <ProjectAction project={project} onOpen={onOpen} />
+        </div>
+      </div>
+    </BorderGlow>
+  );
+}
+
 function Projects() {
   const [activeProjectModal, setActiveProjectModal] = useState(null);
+
+  const openProject = (project) => {
+    if (project.externalUrl) {
+      const openedWindow = window.open(project.externalUrl, '_blank', 'noopener,noreferrer');
+      if (openedWindow) openedWindow.opener = null;
+      return;
+    }
+
+    setActiveProjectModal(project);
+  };
 
   return (
     <section className="projects-section section-pad" id="projects">
       <div className="page-shell">
-        <SectionHeading
-          eyebrow="Selected Work"
-          title="精选项目"
-        />
-        <div className="project-grid">
-          {projects.map((project, index) => {
-            const theme = getGlowTheme(project.tone);
-            const canOpenProject = Boolean(project.video || project.pdf);
-            const projectDialogLabel = project.video ? `播放${project.title}视频` : `打开${project.title}PDF`;
-            const interactiveCardProps = canOpenProject
-              ? {
-                  role: 'button',
-                  tabIndex: 0,
-                  'aria-label': projectDialogLabel,
-                  onClick: () => setActiveProjectModal(project),
-                  onKeyDown: (event) => {
-                    if (event.key === 'Enter' || event.key === ' ') {
-                      event.preventDefault();
-                      setActiveProjectModal(project);
-                    }
-                  },
-                }
-              : {};
+        <SectionHeading eyebrow="Selected Work" title="精选项目" />
+        <div className="project-grid featured-project-grid">
+          {featuredProjects.map((project, index) => (
+            <ProjectCard project={project} index={index} onOpen={openProject} key={project.title} />
+          ))}
+        </div>
 
-            return (
-              <BorderGlow
-                animated={index === 0}
-                backgroundColor={theme.bg}
-                borderRadius={26}
-                className={`project-card project-card-${project.tone}${canOpenProject ? ' project-card-clickable' : ''}`}
-                colors={theme.colors}
-                coneSpread={24}
-                edgeSensitivity={24}
-                fillOpacity={0.24}
-                glowColor={theme.hsl}
-                glowIntensity={1.15}
-                glowRadius={46}
-                key={project.title}
-                {...interactiveCardProps}
-              >
-                <ProjectImage project={project} />
-                <div className="project-copy">
-                  <h3>{project.title}</h3>
-                  <p>{project.summary}</p>
-                  <div className="stat-row">
-                    {project.stats.map((stat) => (
-                      <b key={stat}>{stat}</b>
-                    ))}
-                  </div>
-                </div>
-              </BorderGlow>
-            );
-          })}
+        <div className="more-work-heading">
+          <p>MORE WORK</p>
+          <h3>更多作品</h3>
+        </div>
+        <div className="more-work-grid">
+          {moreProjects.map((project, index) => (
+            <ProjectCard project={project} index={index} compact onOpen={openProject} key={project.title} />
+          ))}
         </div>
       </div>
       {activeProjectModal?.video ? (
@@ -1087,40 +1324,72 @@ function Projects() {
 }
 
 function Strengths() {
+  const theme = glowThemes.mint;
+
   return (
     <section className="strength-section section-pad" id="strengths">
-      <div className="page-shell">
+      <div className="page-shell strength-shell">
         <SectionHeading
-          eyebrow="Strength"
-          title="个人优势"
-          description="围绕内容运营岗位的核心能力组织：从判断选题，到稳定交付，再到用数据反推策略。"
+          eyebrow="Core Capabilities"
+          title="核心能力"
+          description="从用户洞察、内容策划到制作发布与数据复盘，形成完整的内容运营闭环。"
         />
         <div className="strength-grid">
           {strengths.map((item, index) => {
-            const tone = glowToneOrder[index % glowToneOrder.length];
-            const theme = getGlowTheme(tone);
+            const isWide = index >= 4;
 
             return (
               <BorderGlow
-                animated={index === 0}
+                animated={false}
                 backgroundColor={theme.bg}
-                borderRadius={24}
-                className={`strength-card strength-card-${tone}`}
+                borderRadius={20}
+                className={`strength-card ${isWide ? 'strength-card-wide' : 'strength-card-core'}`}
                 colors={theme.colors}
-                coneSpread={26}
-                edgeSensitivity={26}
-                fillOpacity={0.2}
+                coneSpread={22}
+                edgeSensitivity={24}
+                fillOpacity={0.14}
                 glowColor={theme.hsl}
-                glowIntensity={1}
-                glowRadius={38}
+                glowIntensity={0.82}
+                glowRadius={32}
                 key={item.title}
+                tabIndex={0}
+                aria-label={`${String(index + 1).padStart(2, '0')} ${item.title}`}
               >
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <h3>{item.title}</h3>
-                <p>{item.body}</p>
+                <div className="strength-card-heading">
+                  <span className="strength-number">{String(index + 1).padStart(2, '0')}</span>
+                  <h3>{item.title}</h3>
+                </div>
+                <div className="strength-card-content">
+                  <p>{item.body}</p>
+                  <div className="strength-keywords" aria-label="能力关键词">
+                    {item.keywords.map((keyword) => (
+                      <span key={keyword}>{keyword}</span>
+                    ))}
+                  </div>
+                </div>
               </BorderGlow>
             );
           })}
+        </div>
+        <div className="strength-info-list">
+          <div className="strength-info-bar">
+            <span className="strength-info-label">TOOLKIT</span>
+            <div>
+              {capabilityInfo.toolkit.map((tool) => (
+                <span className={tool === 'ChatGPT' || tool === 'Codex' ? 'is-accent' : ''} key={tool}>
+                  {tool}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div className="strength-info-bar">
+            <span className="strength-info-label">CONTENT CHANNELS</span>
+            <div>
+              {capabilityInfo.channels.map((channel) => (
+                <span key={channel}>{channel}</span>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1128,31 +1397,108 @@ function Strengths() {
 }
 
 function Contact() {
+  const [copyStatus, setCopyStatus] = useState('idle');
+  const copyResetTimer = useRef(null);
+
+  useEffect(
+    () => () => {
+      if (copyResetTimer.current) window.clearTimeout(copyResetTimer.current);
+    },
+    [],
+  );
+
+  const copyEmail = async () => {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(profile.email);
+      } else {
+        const fallbackInput = document.createElement('textarea');
+        fallbackInput.value = profile.email;
+        fallbackInput.setAttribute('readonly', '');
+        fallbackInput.style.position = 'fixed';
+        fallbackInput.style.opacity = '0';
+        document.body.appendChild(fallbackInput);
+        fallbackInput.select();
+        const copied = document.execCommand('copy');
+        fallbackInput.remove();
+        if (!copied) throw new Error('Copy command failed');
+      }
+      setCopyStatus('success');
+    } catch {
+      setCopyStatus('error');
+    }
+
+    if (copyResetTimer.current) window.clearTimeout(copyResetTimer.current);
+    copyResetTimer.current = window.setTimeout(() => setCopyStatus('idle'), 1800);
+  };
+
   return (
     <section className="contact-section" id="contact">
-      <div className="page-shell contact-grid">
-        <div>
-          <p className="eyebrow">Contact</p>
-          <h2>期待把内容做成能被业务使用的增长资产</h2>
+      <div className="page-shell contact-shell">
+        <p className="eyebrow contact-eyebrow">CONTACT / LET&apos;S WORK TOGETHER</p>
+        <div className="contact-grid">
+          <div className="contact-intro">
+            <h2>
+              <span>期待让好内容</span>
+              <span>被用户喜欢，也为业务带来结果</span>
+            </h2>
+            <p className="contact-positioning">
+              关注AI陪伴、角色内容与新媒体运营，希望通过用户洞察、内容策划与AI协作，为产品建立持续、有温度的内容表达。
+            </p>
+          </div>
+          <BorderGlow
+            backgroundColor={glowThemes.mint.bg}
+            borderRadius={24}
+            className="contact-card"
+            colors={glowThemes.mint.colors}
+            coneSpread={22}
+            edgeSensitivity={22}
+            fillOpacity={0.16}
+            glowColor={glowThemes.mint.hsl}
+            glowIntensity={0.72}
+            glowRadius={36}
+          >
+            <div className="contact-card-header">
+              <p className="contact-status">OPEN TO WORK</p>
+              <h3>正在寻找AI陪伴APP新媒体运营、内容运营及AI内容相关机会</h3>
+            </div>
+
+            <dl className="contact-details">
+              <div>
+                <dt>邮箱</dt>
+                <dd><a href={`mailto:${profile.email}`}>{profile.email}</a></dd>
+              </div>
+              <div>
+                <dt>电话</dt>
+                <dd>
+                  <a href={`tel:${profile.phone.replace(/\s/g, '')}`}>{profile.phone}</a>
+                </dd>
+              </div>
+              <div>
+                <dt>所在地</dt>
+                <dd>福建 · 厦门</dd>
+              </div>
+              <div>
+                <dt>求职方向</dt>
+                <dd>内容运营 / 新媒体运营 / AI内容</dd>
+              </div>
+            </dl>
+
+            <div className="contact-actions">
+              <button className="contact-copy-button" type="button" onClick={copyEmail}>
+                {copyStatus === 'success'
+                  ? '邮箱已复制'
+                  : copyStatus === 'error'
+                    ? '复制失败，请点击邮箱'
+                    : '复制邮箱'}
+              </button>
+              <span className="contact-copy-feedback" aria-live="polite">
+                {copyStatus === 'success' ? `已复制 ${profile.email}` : ''}
+              </span>
+            </div>
+          </BorderGlow>
         </div>
-        <BorderGlow
-          animated
-          backgroundColor={glowThemes.mint.bg}
-          borderRadius={28}
-          className="contact-card"
-          colors={glowThemes.mint.colors}
-          coneSpread={24}
-          edgeSensitivity={24}
-          fillOpacity={0.22}
-          glowColor={glowThemes.mint.hsl}
-          glowIntensity={1.1}
-          glowRadius={48}
-        >
-          <p>如果你正在寻找内容运营、内容策划候选人，可以通过以下方式联系我。</p>
-          <a href={`mailto:${profile.email}`}>{profile.email}</a>
-          <a href={`tel:${profile.phone.replace(/\s/g, '')}`}>{profile.phone}</a>
-          <span>{profile.location}</span>
-        </BorderGlow>
+        <p className="contact-footer">THANKS FOR VIEWING · 李奕锋个人作品集 · 2026</p>
       </div>
     </section>
   );
@@ -1166,8 +1512,8 @@ export default function App() {
       <Hero />
       <main className="content-main">
         <DeferredAurora />
-        <Experience />
         <Projects />
+        <Experience />
         <Strengths />
         <Contact />
       </main>

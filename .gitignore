@@ -10,3 +10,5 @@ vite.err
 *.log
 *.err
 preview-*.html
+.0 素材文件
+tmp
