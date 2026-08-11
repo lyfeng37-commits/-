@@ -39,6 +39,7 @@ const SoftAurora = lazy(() => import('./components/SoftAurora.jsx'));
 
 function VideoBackdrop() {
   const videoRef = useRef(null);
+  const [videoReady, setVideoReady] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -57,18 +58,28 @@ function VideoBackdrop() {
   }, []);
 
   return (
-    <video
-      ref={videoRef}
-      className="hero-video"
-      src={heroDaynightLoop}
-      poster={heroDaynightPoster}
-      autoPlay
-      loop
-      muted
-      playsInline
-      preload="metadata"
-      aria-hidden="true"
-    />
+    <>
+      <img
+        className="hero-video-poster"
+        src={heroDaynightPoster}
+        alt=""
+        aria-hidden="true"
+      />
+      <video
+        ref={videoRef}
+        className={`hero-video${videoReady ? ' is-ready' : ''}`}
+        src={heroDaynightLoop}
+        poster={heroDaynightPoster}
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+        onCanPlay={() => setVideoReady(true)}
+        onLoadedData={() => setVideoReady(true)}
+        aria-hidden="true"
+      />
+    </>
   );
 }
 
@@ -842,10 +853,10 @@ function Hero() {
       <Header />
       <div className="hero-stage page-shell">
         <div className="hero-title-group">
-          <p className="hero-kicker">求职意向：内容运营</p>
-          <h1 className="hero-title" aria-label={`${profile.name}, Content and AI Creator`}>
+          <p className="hero-kicker">求职意向：创始人助理 / 项目协同</p>
+          <h1 className="hero-title" aria-label={`${profile.name}, Content, AI and Project`}>
             <span>{profile.name}</span>
-            <span>CONTENT &amp; AI CREATOR</span>
+            <span>CONTENT · AI · PROJECT</span>
           </h1>
           <p className="hero-lede">
             用内容与AI，把想法变成可以展示和体验的作品。
@@ -982,14 +993,24 @@ function Experience() {
             onContactClick={() => {
               window.location.href = `mailto:${profile.email}`;
             }}
-            status="新媒体运营 / AI内容创作者"
+            status="创始人助理 / AI项目协作"
             title="Content Operations"
           />
 
           <div className="experience-about">
             <p className="about-label">ABOUT ME</p>
             <h3>Hi, 我是 李奕锋 !</h3>
-            <p className="about-copy">{profile.about}</p>
+            <section className="about-capabilities" aria-labelledby="about-capabilities-title">
+              <h4 id="about-capabilities-title">「我能做什么」</h4>
+              <div className="about-capability-grid">
+                {profile.whatICanDo.map((item) => (
+                  <article className="about-capability" key={item.title}>
+                    <strong>{item.title}</strong>
+                    <p>{item.description}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
 
             <div className="about-facts">
               {profile.facts.map((fact) => (
@@ -1460,7 +1481,7 @@ function Contact() {
           >
             <div className="contact-card-header">
               <p className="contact-status">OPEN TO WORK</p>
-              <h3>正在寻找AI陪伴APP新媒体运营、内容运营及AI内容相关机会</h3>
+              <h3>正在寻找创始人助理、AI项目协作及内容运营相关机会</h3>
             </div>
 
             <dl className="contact-details">
@@ -1480,7 +1501,7 @@ function Contact() {
               </div>
               <div>
                 <dt>求职方向</dt>
-                <dd>内容运营 / 新媒体运营 / AI内容</dd>
+                <dd>创始人助理 / AI项目协作 / 内容运营</dd>
               </div>
             </dl>
 

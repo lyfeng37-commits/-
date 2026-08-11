@@ -245,6 +245,7 @@ a {
 }
 
 .hero-video,
+.hero-video-poster,
 .hero-shade {
   position: absolute;
   inset: 0;
@@ -252,9 +253,22 @@ a {
   height: 100%;
 }
 
+.hero-video-poster,
 .hero-video {
   object-fit: cover;
+}
+
+.hero-video-poster {
+  z-index: 0;
+}
+
+.hero-video {
   filter: saturate(1.08) contrast(1.08);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.hero-video.is-ready {
   opacity: 0.92;
 }
 
@@ -523,7 +537,6 @@ a {
 .hero-video {
   z-index: 0;
   filter: saturate(1.12) contrast(1.06) brightness(0.88);
-  opacity: 0.92;
 }
 
 .hero-shade {
@@ -961,6 +974,9 @@ a {
 .hero-video {
   z-index: 0;
   filter: saturate(0.92) contrast(1.02) brightness(0.9);
+}
+
+.hero-video.is-ready {
   opacity: 0.96;
 }
 
@@ -1056,7 +1072,7 @@ a {
     animation: none !important;
   }
 
-  .hero-video {
+  .hero-video.is-ready {
     opacity: 0.9;
   }
 }
@@ -1499,6 +1515,7 @@ a {
 .experience-profile-card {
   width: 100%;
   max-width: 430px;
+  align-self: center;
   justify-self: center;
 }
 
@@ -1641,6 +1658,45 @@ a {
   font-size: 15px;
   font-weight: 500;
   line-height: 1.8;
+}
+
+.about-capabilities {
+  max-width: 720px;
+  margin: 18px 0 26px;
+}
+
+.about-capabilities h4 {
+  margin: 0 0 14px;
+  color: var(--signal);
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.about-capability-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 22px;
+}
+
+.about-capability {
+  min-width: 0;
+}
+
+.about-capability strong {
+  display: block;
+  margin-bottom: 5px;
+  color: rgba(246, 247, 242, 0.92);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.about-capability p {
+  margin: 0;
+  color: rgba(237, 241, 234, 0.62);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.65;
 }
 
 .about-facts {
@@ -3243,12 +3299,12 @@ a {
   }
 
   .experience-profile-card {
-    max-width: 100%;
+    max-width: 430px;
   }
 
   .experience-profile-card .pc-card {
-    width: 100%;
-    height: 420px;
+    width: min(430px, 100%);
+    height: 540px;
   }
 
   .experience-profile-card .pc-details h3 {
@@ -3437,6 +3493,7 @@ a {
   }
 
   .experience-profile-card {
+    align-self: start;
     justify-self: start;
   }
 
@@ -3748,6 +3805,15 @@ a {
     max-width: 100%;
     font-size: 32px;
     line-height: 1.08;
+  }
+
+  .about-capability-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .about-capabilities {
+    margin-bottom: 22px;
   }
 
   .experience-index {

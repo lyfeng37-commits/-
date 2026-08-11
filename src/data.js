@@ -11,8 +11,26 @@ export const profile = {
   portraitCaption: 'Content Operator',
   about:
     '具备账号选题、脚本、剪辑及社群维护经验，可完成从选题、脚本、分镜到成片和数据复盘的内容生产。 近期通过AI协作在11天内完成「年轮」家族时间轴Web Demo，并负责原创IP《塔可的星际日记》的世界观、角色人设、剧情及内容规划，擅长角色化、情绪化内容表达。',
+  whatICanDo: [
+    {
+      title: '快速学习与信息研究',
+      description: '面对陌生领域，能够快速检索、整理资料并形成可执行方案。',
+    },
+    {
+      title: 'AI协作与项目落地',
+      description: '使用 Codex、Trae、生成式AI等工具辅助内容、产品原型及项目实现。',
+    },
+    {
+      title: '项目推进与跨部门沟通',
+      description: '有客户、设计、运营、售前售后等多角色协作经历，能够持续跟进问题直至解决。',
+    },
+    {
+      title: '内容与视觉表达',
+      description: '具备脚本、视频剪辑、视觉设计基础，能够独立完成基础内容输出。',
+    },
+  ],
   facts: [
-    { label: '求职方向', value: 'APP新媒体运营' },
+    { label: '求职方向', value: '创始人助理（AI / 项目协同方向）' },
     { label: '核心能力', value: '用户洞察 / 内容策划 / 短视频 / AIGC' },
     { label: '手机', value: '15106026855' },
     { label: '邮箱', value: '374127705@qq.com' },
@@ -89,23 +107,6 @@ export const careerPath = [
 export const featuredProjects = [
   {
     number: '01',
-    type: 'AI COMPANION APP / CONTENT STRATEGY',
-    title: 'AI陪伴APP体验与内容策划',
-    subtitle: '甜气 × 星野 × 猫箱',
-    summary:
-      '以甜气为重点体验对象，对比星野与猫箱，从角色吸引力、对话沉浸、付费体验、用户留存与站外传播等维度进行分析，并提出内容运营与产品优化方向。',
-    stats: ['APP体验', '竞品分析', '用户洞察', '内容策划'],
-    image: 'aiCompanion',
-    imageFit: 'cover',
-    imagePosition: 'center',
-    imageAlt: 'AI陪伴APP体验与内容策划封面，包含甜气、星野与猫箱三款产品',
-    actionLabel: '查看策划案 ↗',
-    note: '自主体验与岗位定向策划，非相关品牌任职项目',
-    pdf: publicAsset('ai-companion-app-strategy.pdf'),
-    tone: 'mint',
-  },
-  {
-    number: '02',
     type: 'AI PRODUCT / WEB DEMO',
     title: '年轮｜家族时间轴 Web Demo',
     summary:
@@ -120,7 +121,7 @@ export const featuredProjects = [
     tone: 'amber',
   },
   {
-    number: '03',
+    number: '02',
     type: 'ORIGINAL IP / CHARACTER CONTENT',
     title: '《塔可的星际日记》｜原创IP内容策划',
     summary:
@@ -139,6 +140,23 @@ export const featuredProjects = [
     ],
     pdf: publicAsset('li-yifeng-ip-portfolio.pdf'),
     tone: 'amber',
+  },
+  {
+    number: '03',
+    type: 'AI COMPANION APP / CONTENT STRATEGY',
+    title: 'AI陪伴APP体验与内容策划',
+    subtitle: '甜气 × 星野 × 猫箱',
+    summary:
+      '以甜气为重点体验对象，对比星野与猫箱，从角色吸引力、对话沉浸、付费体验、用户留存与站外传播等维度进行分析，并提出内容运营与产品优化方向。',
+    stats: ['APP体验', '竞品分析', '用户洞察', '内容策划'],
+    image: 'aiCompanion',
+    imageFit: 'cover',
+    imagePosition: 'center',
+    imageAlt: 'AI陪伴APP体验与内容策划封面，包含甜气、星野与猫箱三款产品',
+    actionLabel: '查看策划案 ↗',
+    note: '自主体验与岗位定向策划，非相关品牌任职项目',
+    pdf: publicAsset('ai-companion-app-strategy.pdf'),
+    tone: 'mint',
   },
 ];
 
